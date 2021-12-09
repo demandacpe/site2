@@ -35,20 +35,6 @@ function openModal() {
   pauseAllMedia();
 }
 
-function pauseAllMedia() {
-  pauseVideos();
-  pauseAudios();
-}
-
-function pauseVideos() {
-  const videos = Array.from(document.getElementsByTagName("video"));
-  videos.forEach((video) => video.pause());
-}
-function pauseAudios() {
-  const audios = Array.from(document.getElementsByTagName("audio"));
-  audios.forEach((video) => video.pause());
-}
-
 function showInModal(e) {
   e.preventDefault();
 
@@ -65,6 +51,20 @@ function showInModal(e) {
   openModal();
 }
 
+function pauseAllMedia() {
+  pauseVideos();
+  pauseAudios();
+}
+
+function pauseVideos() {
+  const videos = Array.from(document.getElementsByTagName("video"));
+  videos.forEach((video) => video.pause());
+}
+function pauseAudios() {
+  const audios = Array.from(document.getElementsByTagName("audio"));
+  audios.forEach((video) => video.pause());
+}
+
 function generateItems() {
   for (file of files) {
     const card = document.createElement("div");
@@ -76,7 +76,9 @@ function generateItems() {
     const header = window.document.createElement("div");
     header.classList.add("img-card-top");
     header.appendChild(content);
-    header.onclick = (e) => showInModal(e);
+    header.onclick = (e) => {
+      if (e.target.classList.contains("img-card-top")) showInModal(e);
+    };
 
     // body
     const body = document.createElement("div");
@@ -131,7 +133,15 @@ function generateImage(url) {
   const image = document.createElement("img");
   image.src = url;
   image.className = "image";
+  // garantir que a imagem não expanda sem seu nodo pai
+  image.onclick = redirectClickToParent;
   return image;
+}
+
+function redirectClickToParent(e) {
+  const originalTarget = e.target;
+  const originalParent = originalTarget.parentNode;
+  originalParent.click();
 }
 
 function generateAudio(url) {
